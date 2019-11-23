@@ -16,7 +16,8 @@
     "prerelease": "npm-run-all test",
     "pretest": "npm-run-all clean compile",
     "release": "semantic-release",
-    "test": "NODE_ENV=test jest"
+    "test": "NODE_ENV=test jest",
+    "test:watch": "NODE_ENV=test jest --watch"
   },
   "engines": {
     "node": ">=8"
@@ -31,7 +32,8 @@
     "table",
     "ink-table",
     "ink-component",
-    "component"
+    "component",
+    "terminal"
   ],
   "dependencies": {
     "prop-types": "^15.7.2"
@@ -39,9 +41,9 @@
   "devDependencies": {
     "@types/ink": "^0.5.1",
     "@types/ink-testing-library": "^1.0.0",
-    "@types/jest": "^24.0.13",
+    "@types/jest": "^24.0.23",
     "@types/prop-types": "^15.7.1",
-    "@types/react": "^16.8.19",
+    "@types/react": "^16.9.12",
     "codecov": "^3.5.0",
     "husky": "^2.3.0",
     "ink": "2.2.0",
@@ -50,12 +52,12 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^1.17.1",
     "pretty-quick": "^1.11.0",
-    "react": "16.8.6",
+    "react": "^16.9.0",
     "rimraf": "^2.6.3",
     "semantic-release": "15.13.16",
+    "travis-deploy-once": "5.0.11",
     "ts-jest": "^24.0.2",
     "typescript": "^3.5.1",
-    "travis-deploy-once": "5.0.11",
     "xo": "0.24.0"
   },
   "peerDependencies": {

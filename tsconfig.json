@@ -3,17 +3,16 @@
     "target": "es2015",
     "module": "commonjs",
     "moduleResolution": "node",
-    "noUnusedLocals": false,
-    "noFallthroughCasesInSwitch": true,
-    "strict": true,
-    "rootDir": "src",
     "outDir": "dist",
     "sourceMap": true,
+    "rootDir": "src",
     "lib": ["dom", "es2017"],
+    "jsx": "react",
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "jsx": "react"
+    "resolveJsonModule": true,
+    "types": ["react", "jest"]
   },
-  "include": ["src/**/*"],
+  "include": ["typings/*.ts", "src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist"]
 }
