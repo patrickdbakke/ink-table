@@ -2,16 +2,13 @@ import * as React from 'react'
 import { Box, Color } from 'ink'
 import { Dictionary } from './utils'
 
-type HasWidth = {
-  width: number
-}
 export interface TableProps<T> {
   data: Array<Dictionary<T | string>>
   headers?: Dictionary<T | string>
   padding?: number
-  header?: React.ComponentType<{ children: string } & HasWidth>
-  cell?: React.ComponentType<{ children: string } & HasWidth>
-  skeleton?: React.ComponentClass<{ children: string } & HasWidth>
+  header?: React.ComponentType
+  cell?: React.ComponentType
+  skeleton?: React.ComponentType
   characters: FrameCharacters
 }
 export interface FrameCharacters {
@@ -28,60 +25,56 @@ export interface FrameCharacters {
   '├': string
   '┤': string
 }
+type FrameCharacter = keyof FrameCharacters
 
 const stringOf = (s: string, n: number) => new Array(n).fill(s).join('')
 
-type FrameCharacter = keyof FrameCharacters
-const Skeleton: React.FC<HasWidth> = ({ width, children }) => {
+const Cell: React.FC = ({ children, ...props }) => {
+  return <Color {...props}>{children}</Color>
+}
+const Skeleton: React.FC = ({ children }) => {
   return (
-    <Box width={width} flexDirection="row">
-      <Color white bold>
-        {children}
-      </Color>
-    </Box>
+    <Color white bold>
+      {children}
+    </Color>
   )
 }
-const Header: React.FC<HasWidth> = ({ width, children }) => {
+const Header: React.FC = ({ children }) => {
   return (
-    <Box width={width} flexDirection="row">
-      <Color blue bold>
-        {children}
-      </Color>
-    </Box>
-  )
-}
-const Cell: React.FC<HasWidth> = ({ width, children }) => {
-  return (
-    <Box width={width} flexDirection="row">
-      <Color>{children}</Color>
-    </Box>
+    <Color blue bold>
+      {children}
+    </Color>
   )
 }
 
+const defaultProps = {
+  padding: 1,
+  header: Header,
+  cell: Cell,
+  skeleton: Skeleton,
+  characters: {
+    ' ': ' ',
+    '─': '─',
+    '│': '│',
+    '┼': '┼',
+    '┌': '┌',
+    '┐': '┐',
+    '└': '└',
+    '┘': '┘',
+    '┬': '┬',
+    '┴': '┴',
+    '├': '├',
+    '┤': '┤',
+  },
+}
+
 export class Table<T> extends React.Component<TableProps<T>> {
+  private currentX = 0
+  private currentY = 0
   private totalWidth: number
   private widthsByKey: Dictionary<number>
   private keys: string[]
-  static defaultProps = {
-    padding: 1,
-    header: Header,
-    cell: Cell,
-    skeleton: Skeleton,
-    characters: {
-      ' ': ' ',
-      '─': '─',
-      '│': '│',
-      '┼': '┼',
-      '┌': '┌',
-      '┐': '┐',
-      '└': '└',
-      '┘': '┘',
-      '┬': '┬',
-      '┴': '┴',
-      '├': '├',
-      '┤': '┤',
-    },
-  }
+  static defaultProps = defaultProps
 
   /**
    * Generates a line out of the provided cells.
@@ -140,9 +133,6 @@ export class Table<T> extends React.Component<TableProps<T>> {
     }
 
     const padd = stringOf(characters[line], padding)
-    const Left = <S width={1}>{characters[left]}</S>
-    const Divider = <S width={1}>{characters[divider]}</S>
-    const Right = <S width={1}>{characters[right]}</S>
     const Middle = this.keys.map((key, i) => {
       const width = this.widthsByKey[key]
       let text
@@ -153,25 +143,34 @@ export class Table<T> extends React.Component<TableProps<T>> {
           String(data[key]) + stringOf(' ', width - String(data[key]).length)
       }
       const rows = [
-        <CellType padding={padding} width={width + padding * 2} key={i}>
-          {padd}
-          {text}
-          {}
-          {padd}
-        </CellType>,
+        <Box flexDirection="row">
+          <CellType padding={padding} key={i}>
+            {padd}
+            {text}
+            {padd}
+          </CellType>
+        </Box>,
       ]
       if (i < this.keys.length - 1) {
-        rows.push(Divider)
+        rows.push(
+          <Box flexDirection="row">
+            <S>{characters[divider]}</S>
+          </Box>,
+        )
       }
       return rows
     })
 
     return (
-      <Box width={this.totalWidth} flexDirection="row" key={key}>
-        {Left}
+      <>
+        <Box flexDirection="row">
+          <S>{characters[left]}</S>
+        </Box>
         {Middle}
-        {Right}
-      </Box>
+        <Box flexDirection="row">
+          <S>{characters[right]}</S>
+        </Box>
+      </>
     )
   }
 
@@ -205,17 +204,25 @@ export class Table<T> extends React.Component<TableProps<T>> {
 
     return (
       <>
-        {this.getLine('top', emptyRow, 1)}
-        {this.getLine('header', headerRow, 2)}
-        {this.getLine('mid', emptyRow, 3)}
+        <Box flexDirection="row">{this.getLine('top', emptyRow, 1)}</Box>
+        <Box flexDirection="row">{this.getLine('header', headerRow, 2)}</Box>
+        <Box flexDirection="row">{this.getLine('mid', emptyRow, 3)}</Box>
         {data.map((row, i) => {
-          const rows = [this.getLine('row', row, 4 + 2 * i)]
+          const rows = [
+            <Box flexDirection="row">
+              {this.getLine('row', row, 4 + 2 * i)}
+            </Box>,
+          ]
           if (i < data.length - 1) {
-            rows.push(this.getLine('mid', emptyRow, 4 + 2 * i + 1))
+            rows.push(
+              <Box flexDirection="row">
+                {this.getLine('mid', emptyRow, 4 + 2 * i + 1)}
+              </Box>,
+            )
           }
           return rows
         })}
-        {this.getLine('bottom', emptyRow, 0)}
+        <Box flexDirection="row">{this.getLine('bottom', emptyRow, 0)}</Box>
       </>
     )
   }

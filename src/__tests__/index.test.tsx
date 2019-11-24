@@ -7,9 +7,21 @@ import Table, { Header, Skeleton, Cell } from '../'
 
 // Helpers -------------------------------------------------------------------
 
-const s = (v: string) => <Skeleton width={v.length}>{v}</Skeleton>
-const e = (v: string) => <Header width={v.length}>{v}</Header>
-const c = (v: string) => <Cell width={v.length}>{v}</Cell>
+const s = (v: string) => (
+  <Box flexDirection="row">
+    <Skeleton>{v}</Skeleton>
+  </Box>
+)
+const e = (v: string) => (
+  <Box flexDirection="row">
+    <Header>{v}</Header>
+  </Box>
+)
+const c = (v: string) => (
+  <Box flexDirection="row">
+    <Cell>{v}</Cell>
+  </Box>
+)
 
 const Custom = ({ children }: { children: ReactNode }) => (
   <Color red italic>
@@ -20,7 +32,11 @@ Custom.propTypes = {
   children: PropTypes.any.isRequired,
 }
 
-const u = (v: string) => <Custom>{v}</Custom>
+const u = (v: string) => (
+  <Box flexDirection="row">
+    <Custom>{v}</Custom>
+  </Box>
+)
 
 // Tests ---------------------------------------------------------------------
 
@@ -59,6 +75,8 @@ describe('ink-table', () => {
     )
     const act = actual()
     const exp = expected()
+    console.log(act)
+    console.log(exp)
     expect(act).toEqual(exp)
   })
 
@@ -106,7 +124,11 @@ describe('ink-table', () => {
       </>,
     )
 
-    expect(actual()).toEqual(expected())
+    const act = actual()
+    const exp = expected()
+    console.log(act)
+    console.log(exp)
+    expect(act).toEqual(exp)
   })
 
   it('renders a table with multiple rows.', () => {
@@ -426,66 +448,71 @@ describe('ink-table', () => {
     expect(actual()).toEqual(expected())
   })
 
-  // it('renders a table with custom skeleton.', () => {
-  //   const data = [{ name: 'Foo', age: 12 }, { name: 'Bar', age: 15 }]
-  //   const { lastFrame: actual } = render(<Table data={data} skeleton={Custom} />)
+  it('renders a table with custom skeleton.', () => {
+    const data = [
+      { name: 'Foo', age: 12 },
+      { name: 'Bar', age: 15 },
+    ]
+    const { lastFrame: actual } = render(
+      <Table data={data} skeleton={Custom} />,
+    )
 
-  //   const { lastFrame: expected } = render(
-  //     <>
-  //       <Box>
-  //         {u('┌')}
-  //         {u('──────')}
-  //         {u('┬')}
-  //         {u('─────')}
-  //         {u('┐')}
-  //       </Box>
-  //       <Box>
-  //         {u('│')}
-  //         {e(' name ')}
-  //         {u('│')}
-  //         {e(' age ')}
-  //         {u('│')}
-  //       </Box>
-  //       <Box>
-  //         {u('├')}
-  //         {u('──────')}
-  //         {u('┼')}
-  //         {u('─────')}
-  //         {u('┤')}
-  //       </Box>
-  //       <Box>
-  //         {u('│')}
-  //         {c(' Foo  ')}
-  //         {u('│')}
-  //         {c(' 12  ')}
-  //         {u('│')}
-  //       </Box>
-  //       <Box>
-  //         {u('├')}
-  //         {u('──────')}
-  //         {u('┼')}
-  //         {u('─────')}
-  //         {u('┤')}
-  //       </Box>
-  //       <Box>
-  //         {u('│')}
-  //         {c(' Bar  ')}
-  //         {u('│')}
-  //         {c(' 15  ')}
-  //         {u('│')}
-  //       </Box>
-  //       <Box>
-  //         {u('└')}
-  //         {u('──────')}
-  //         {u('┴')}
-  //         {u('─────')}
-  //         {u('┘')}
-  //       </Box>
-  //     </>,
-  //   )
+    const { lastFrame: expected } = render(
+      <>
+        <Box>
+          {u('┌')}
+          {u('──────')}
+          {u('┬')}
+          {u('─────')}
+          {u('┐')}
+        </Box>
+        <Box>
+          {u('│')}
+          {e(' name ')}
+          {u('│')}
+          {e(' age ')}
+          {u('│')}
+        </Box>
+        <Box>
+          {u('├')}
+          {u('──────')}
+          {u('┼')}
+          {u('─────')}
+          {u('┤')}
+        </Box>
+        <Box>
+          {u('│')}
+          {c(' Foo  ')}
+          {u('│')}
+          {c(' 12  ')}
+          {u('│')}
+        </Box>
+        <Box>
+          {u('├')}
+          {u('──────')}
+          {u('┼')}
+          {u('─────')}
+          {u('┤')}
+        </Box>
+        <Box>
+          {u('│')}
+          {c(' Bar  ')}
+          {u('│')}
+          {c(' 15  ')}
+          {u('│')}
+        </Box>
+        <Box>
+          {u('└')}
+          {u('──────')}
+          {u('┴')}
+          {u('─────')}
+          {u('┘')}
+        </Box>
+      </>,
+    )
 
-  //   expect(actual()).toEqual(expected())
-  // });
+    expect(actual()).toEqual(expected())
+  })
 })
 
 // ---------------------------------------------------------------------------
